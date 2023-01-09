@@ -1,2 +1,2 @@
 # Basic
-A Basic interpreter built in python
+This is a Basic interpreter built in Python.
