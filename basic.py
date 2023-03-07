@@ -1,5 +1,4 @@
 import argparse
-
 from basic.runner import Runner
 
 parser = argparse.ArgumentParser(
@@ -10,12 +9,13 @@ parser = argparse.ArgumentParser(
 parser.add_argument('filename')
 
 args = parser.parse_args()
-result, error = Runner.run(f'{args.filename}', f'RUN({args.filename})')
+with open(args.filename, 'r') as f:
+	result, error = Runner.run(args.filename, f.read())
 
 if error:
 		print(error.as_string())
-	elif result:
-		if len(result.elements) <= 1:
-			print(repr(result.elements[0]))
-		else:
-			print(repr(result))
+elif result:
+	if len(result.elements) <= 1:
+		print(repr(result.elements[0]))
+	else:
+		print(repr(result))

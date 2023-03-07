@@ -1,6 +1,5 @@
 from basic.types.value import Value
 from basic.errors import RTError
-import math
 
 class Number(Value):
   def __init__(self, value):
@@ -113,4 +112,5 @@ class Number(Value):
 Number.null = Number(0)
 Number.false = Number(0)
 Number.true = Number(1)
-Number.math_PI = Number(math.pi)
+Number.pi = Number(3.14159)
+Number.e = Number(2.71828)

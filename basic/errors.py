@@ -3,32 +3,35 @@ from basic.strings_with_arrows import string_with_arrows
 
 class Error:
   def __init__(self, pos_start, pos_end, error_name, details):
-    self.pos_start = pos_start
-    self.pos_end = pos_end
+    self.pos_start = pos_start or None
+    self.pos_end = pos_end or None
     self.error_name = error_name
     self.details = details
   
   def as_string(self):
-    result  = f'{self.error_name}: {self.details}\n'
+    result  = f'\033[31m{self.error_name}: {self.details}\n'
     result += f'File {self.pos_start.fn}, line {self.pos_start.ln + 1}'
-    result += '\n\n' + string_with_arrows(self.pos_start.ftxt, self.pos_start, self.pos_end)
+    if self.pos_start and self.pos_end:
+      result += '\n\n' + string_with_arrows(self.pos_start.ftxt, self.pos_start, self.pos_end) + '\033[0m'
+    else:
+      result += '\033[0m'
     return result
 
 class IllegalCharError(Error):
   def __init__(self, pos_start, pos_end, details):
-    super().__init__(pos_start, pos_end, 'Illegal Character', details)
+    super().__init__(pos_start, pos_end, 'IllegalCharError', details)
 
 class ExpectedCharError(Error):
   def __init__(self, pos_start, pos_end, details):
-    super().__init__(pos_start, pos_end, 'Expected Character', details)
+    super().__init__(pos_start, pos_end, 'ExpectedCharError', details)
 
 class InvalidSyntaxError(Error):
   def __init__(self, pos_start, pos_end, details=''):
-    super().__init__(pos_start, pos_end, 'Invalid Syntax', details)
+    super().__init__(pos_start, pos_end, 'InvalidSyntaxError', details)
 
 class RTError(Error):
   def __init__(self, pos_start, pos_end, details, context):
-    super().__init__(pos_start, pos_end, 'Runtime Error', details)
+    super().__init__(pos_start, pos_end, 'RuntimeError', details)
     self.context = context
 
   def as_string(self):
@@ -48,3 +51,14 @@ class RTError(Error):
       ctx = ctx.parent
 
     return 'Traceback (most recent call last):\n' + result
+
+class FunctionRecursionError:
+  def __init__(self):
+    self.name = 'FunctionRecursionError'
+    self.details = 'function exceeds recursion limit'
+  
+  def as_string(self):
+    res = '\033[31m'
+    res += f'{self.name}: {self.details}'
+    res += '\033[0m'
+    return res

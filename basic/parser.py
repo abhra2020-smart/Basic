@@ -147,17 +147,10 @@ class Parser:
 
         expr = res.register(self.expr())
         if res.error:
-            expected_list = [
-                Keywords.KW_RETURN, Keywords.KW_CONTINUE, Keywords.KW_BREAK,
-                Keywords.KW_VAR, Keywords.KW_IF, Keywords.KW_FOR,
-                Keywords.KW_WHILE, Keywords.KW_FUN, TokenType.TT_INT,
-                TokenType.TT_FLOAT, TokenType.TT_IDENTIFIER, '+', '-', '(',
-                '[', Keywords.KW_NOT
-            ]
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected {','.join(map(str, expected_list))}"))
+                                   "Expected 'return', 'continue', 'break', 'var', 'if', 'for', 'while', 'function', int, float, identifier, '+', '-', '(', '[' or 'not'"))
         return res.success(expr)
 
     def expr(self):
@@ -171,7 +164,7 @@ class Parser:
                 return res.failure(
                     InvalidSyntaxError(self.current_tok.pos_start,
                                        self.current_tok.pos_end,
-                                       f"Expected {TokenType.TT_IDENTIFIER}"))
+                                       f"Expected identifier"))
 
             var_name = self.current_tok
             res.register_advancement()
@@ -194,15 +187,10 @@ class Parser:
                                          (TokenType.TT_KEYWORD, Keywords.KW_OR))))
 
         if res.error:
-            expected_list = [
-                Keywords.KW_VAR, Keywords.KW_IF, Keywords.KW_FOR, Keywords.KW_WHILE,
-                Keywords.KW_FUN, TokenType.TT_INT, TokenType.TT_FLOAT, TokenType.TT_IDENTIFIER,
-                '+', '-', '(', '[', Keywords.KW_NOT
-            ]
             return res.failure(
                 InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"Expected {','.join(map(str, expected_list))}"
+                    "Expected ')', 'var', 'if', 'for', 'while', 'function', int, float, identifier, '+', '-', '(', '[' or 'not'"
                 ))
 
         return res.success(node)
@@ -225,15 +213,10 @@ class Parser:
                          TokenType.TT_GT, TokenType.TT_LTE, TokenType.TT_GTE)))
 
         if res.error:
-            expected_list = [
-                TokenType.TT_INT, TokenType.TT_FLOAT, TokenType.TT_IDENTIFIER,
-                '+', '-', '(', '[', Keywords.KW_IF, Keywords.KW_FOR, Keywords.KW_WHILE,
-                Keywords.KW_FUN, Keywords.KW_NOT
-            ]
             return res.failure(
                 InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"Expected {','.join(map(str, expected_list))}"
+                    "Expected Expected ')', 'var', 'if', 'for', 'while', 'function', int, float, identifier, '+', '-', '(', '[' or 'not'"
                 ))
 
         return res.success(node)
@@ -276,17 +259,11 @@ class Parser:
             else:
                 arg_nodes.append(res.register(self.expr()))
                 if res.error:
-                    expected_list = [
-                        ')', Keywords.KW_VAR, Keywords.KW_IF, Keywords.KW_FOR,
-                        Keywords.KW_WHILE, Keywords.KW_FUN, TokenType.TT_INT,
-                        TokenType.TT_FLOAT, TokenType.TT_IDENTIFIER,
-                        '+', '-', '(', '[', Keywords.KW_NOT
-                    ]
                     return res.failure(
                         InvalidSyntaxError(
                             self.current_tok.pos_start,
                             self.current_tok.pos_end,
-                            f"Expected {','.join(map(str, expected_list))}"
+                            "Expected ')', 'var', 'if', 'for', 'while', 'function', int, float, identifier, '+', '-', '(', '[' or 'not'"
                         ))
 
                 while self.current_tok.type == TokenType.TT_COMMA:
@@ -303,7 +280,7 @@ class Parser:
                     return res.failure(
                         InvalidSyntaxError(self.current_tok.pos_start,
                                            self.current_tok.pos_end,
-                                           f"Expected {expected_list}"))
+                                           f"Expected ',' or ')'"))
 
                 res.register_advancement()
                 self.advance()
@@ -370,16 +347,10 @@ class Parser:
             if res.error: return res
             return res.success(func_def)
 
-        expected_list = [
-            TokenType.TT_INT, TokenType.TT_FLOAT,
-            TokenType.TT_IDENTIFIER, '+', '-', '(', '[',
-            Keywords.KW_IF, Keywords.KW_FOR, Keywords.KW_WHILE,
-            Keywords.KW_FUN
-        ]
         return res.failure(
             InvalidSyntaxError(
                 tok.pos_start, tok.pos_end,
-                f"Expected {expected_list}"
+                f"Expected int, float, identifier, '+', '-', '(', '[', 'if', 'for', 'while' or 'function'"
             ))
 
     def list_expr(self):
@@ -404,7 +375,7 @@ class Parser:
                 return res.failure(
                     InvalidSyntaxError(
                         self.current_tok.pos_start, self.current_tok.pos_end,
-                        "Expected ']', 'VAR', 'IF', 'FOR', 'WHILE', 'FUN', int, float, identifier, '+', '-', '(', '[' or 'NOT'"
+                        "Expected ']', 'var', 'if', 'for', 'while', 'function', int, float, identifier, '+', '-', '(', '[' or 'not'"
                     ))
 
             while self.current_tok.type == TokenType.TT_COMMA:
@@ -460,7 +431,7 @@ class Parser:
                     return res.failure(
                         InvalidSyntaxError(self.current_tok.pos_start,
                                            self.current_tok.pos_end,
-                                           "Expected 'END'"))
+                                           "Expected 'end'"))
             else:
                 expr = res.register(self.statement())
                 if res.error: return res
@@ -503,7 +474,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'THEN'"))
+                                   f"Expected 'then'"))
 
         res.register_advancement()
         self.advance()
@@ -543,7 +514,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'FOR'"))
+                                   f"Expected 'for'"))
 
         res.register_advancement()
         self.advance()
@@ -572,7 +543,7 @@ class Parser:
         if not self.current_tok.matches(TokenType.TT_KEYWORD, Keywords.KW_TO):
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
-                                   self.current_tok.pos_end, f"Expected 'TO'"))
+                                   self.current_tok.pos_end, f"Expected 'to'"))
 
         res.register_advancement()
         self.advance()
@@ -593,7 +564,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'THEN'"))
+                                   f"Expected 'then'"))
 
         res.register_advancement()
         self.advance()
@@ -609,7 +580,7 @@ class Parser:
                 return res.failure(
                     InvalidSyntaxError(self.current_tok.pos_start,
                                        self.current_tok.pos_end,
-                                       f"Expected 'END'"))
+                                       f"Expected 'end'"))
 
             res.register_advancement()
             self.advance()
@@ -631,7 +602,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'WHILE'"))
+                                   f"Expected 'while'"))
 
         res.register_advancement()
         self.advance()
@@ -643,7 +614,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'THEN'"))
+                                   f"Expected 'then'"))
 
         res.register_advancement()
         self.advance()
@@ -659,7 +630,7 @@ class Parser:
                 return res.failure(
                     InvalidSyntaxError(self.current_tok.pos_start,
                                        self.current_tok.pos_end,
-                                       f"Expected 'END'"))
+                                       f"Expected 'end'"))
 
             res.register_advancement()
             self.advance()
@@ -678,7 +649,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'FUN'"))
+                                   f"Expected 'function'"))
 
         res.register_advancement()
         self.advance()
@@ -752,7 +723,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected '->' or NEWLINE"))
+                                   f"Expected '->' or newline"))
 
         res.register_advancement()
         self.advance()
@@ -764,7 +735,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(self.current_tok.pos_start,
                                    self.current_tok.pos_end,
-                                   f"Expected 'END'"))
+                                   f"Expected 'end'"))
 
         res.register_advancement()
         self.advance()

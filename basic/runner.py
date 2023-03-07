@@ -1,4 +1,3 @@
-from basic.lexer import Lexer
 from basic.parser import Parser
 from basic.interpreter import Interpreter
 from basic.context import Context
